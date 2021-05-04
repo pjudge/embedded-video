@@ -9,3 +9,5 @@ When clicked, the thumbnail will be replaced by the appropriately
 constructed iframe. 
 
 This works with videos in the Drupal 8 media library. 
+
+These files should eventually be turned into a custom module. 
