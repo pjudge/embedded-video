@@ -1,0 +1,30 @@
+{#
+/**
+ * @file
+ * Theme override to display a media item.
+ *
+ * Available variables:
+ * - name: Name of the media.
+ * - content: Media content.
+ *
+ * @see template_preprocess_media()
+ */
+#}
+{{ attach_library('THEME/remote-videos') }}
+
+<div{{ attributes }}>
+  {{ title_suffix.contextual_links }}
+  {% if content %}
+  <div class="remote-video-embed play-button__wrapper {{ video_type }}" data-vid-id="{{ video_ID }}" data-vid-title="{{ media.name.0.value }}" data-vid-src="{{ video_type }}">
+    {# The default thumbnail that drupal grabs from youtube is not the same ratio as vimeo.
+    Let's get the larger one from the source. #}
+    {% if (video_type == 'youtube') %}
+    <img src="https://img.youtube.com/vi/{{ video_ID }}/maxresdefault.jpg" alt="{{ media.name.0.value }}" async class="play-video">
+    {% elseif (video_type == 'vimeo') %}
+    <img src="{{ file_url(media.thumbnail.0.entity.uri.value) }}" alt="{{ media.name.0.value }}" async class="play-video">
+    {% endif %}
+
+    <button class="play-button"/></button>
+  </div>
+  {% endif %}
+</div>

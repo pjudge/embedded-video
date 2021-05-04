@@ -1,0 +1,28 @@
+<?php
+
+function THEME_preprocess_media(array &$variables) {
+  $media = $variables['media'];
+  $bundle = $media->bundle();
+
+  if ($bundle == 'remote_video') {
+    $video_field = $media->get('field_media_oembed_video')->getValue();
+    $video_url = $video_field[0]['value'];
+
+    // Is it vimeo or youtube? Set a var to use in twig.
+    $variables['video_type'] = preg_match('/youtu\.?be/', $video_url) ? 'youtube' : 'vimeo';
+
+    if ($variables['video_type'] == 'youtube') {
+      // Regex to strip the video ID out of the URL for YT.
+      if (preg_match("/^(?:http(?:s)?:\/\/)?(?:www\.)?(?:m\.)?(?:youtu\.be\/|youtube\.com\/(?:(?:watch)?\?(?:.*&)?v(?:i)?=|(?:embed|v|vi|user)\/))([^\?&\"'>]+)/", $video_url, $matches)) {
+        $variables['video_ID'] = $matches[1];
+      }
+    }
+    elseif ($variables['video_type'] == 'vimeo') {
+      // Regex to strip the video ID out of the URL for vimeo.
+      if (preg_match("/(https?:\/\/)?(www\.)?(player\.)?vimeo\.com\/?(showcase\/)*([0-9))([a-z]*\/)*([0-9]{6,11})[?]?.*/", $video_url, $matches)) {
+        $variables['video_ID'] = $matches[6];
+      }
+    }
+
+  }
+}
